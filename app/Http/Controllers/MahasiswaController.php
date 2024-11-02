@@ -14,29 +14,38 @@ class MahasiswaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama' => 'required',
-            'nim' => 'required|unique:mahasiswas',
-            'jurusan' => 'required',
+            'nama' => 'required|string',
         ]);
+        $mahasiswa = Mahasiswa::create($request->all());
 
-        return Mahasiswa::create($request->all());  // Menyimpan data baru
-    }
-
-    public function show($id)
-    {
-        return Mahasiswa::findOrFail($id);  // Mengambil data berdasarkan ID
+        return response()->json($mahasiswa, 201);  // Menyimpan data baru
     }
 
     public function update(Request $request, $id)
     {
         $mahasiswa = Mahasiswa::findOrFail($id);
-        $mahasiswa->update($request->all());  // Mengupdate data
-        return $mahasiswa;
+        $mahasiswa->update($request->all());
+        
+        return response()->json($mahasiswa, 200);// Mengambil data berdasarkan ID
     }
+
 
     public function destroy($id)
     {
-        Mahasiswa::destroy($id);  // Menghapus data
-        return response()->json(['message' => 'Deleted']);
+        $mahasiswa = Mahasiswa::findOrFail($id);
+        $mahasiswa->delete(); // Menghapus data
+        
+        return response()->json(null, 204);
     }
+
+    public function show($id)
+{
+    $mahasiswa = Mahasiswa::find($id);
+
+    if (!$mahasiswa) {
+        return response()->json(['message' => 'Mahasiswa not found'], 404);
+    }
+
+    return response()->json($mahasiswa);
+}
 }

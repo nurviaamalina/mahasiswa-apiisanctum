@@ -16,12 +16,16 @@ use App\Http\Controllers\MahasiswaController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Rute yang memerlukan autentikasi Sanctum
 Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+
+    // Rute untuk resource Mahasiswa
     Route::apiResource('mahasiswas', MahasiswaController::class);
 });
 
+// Rute publik (tidak memerlukan autentikasi)
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
